@@ -1,0 +1,6 @@
+{
+	"/api/*": "/$1",
+	"/:resource/:id/show": "/:resource/:id",
+	"/powerObjectsWithSwitches": "/powerobjects?_embed=switches",
+	"/requestsWithPowerObject": "/requests?_expand=powerObject"
+}

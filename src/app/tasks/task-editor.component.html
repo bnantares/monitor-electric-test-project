@@ -1,0 +1,66 @@
+@if (taskForm) {
+<div class="max-w-4xl mx-auto space-y-6">
+
+  <h1 class="text-2xl font-bold">
+    @if (isEditMode()) {
+    <div>
+      Редактирование задачи по Заявке
+    </div>
+    } @else if (request()) {
+    <div>
+      Создание задачи на основе заявки
+      <a [routerLink]="['/requests', request().id]" target="_blank" class="text-blue-600 underline">
+        {{ request().name }}
+      </a>
+    </div>
+    }
+  </h1>
+
+  <!-- Форма создания задачи -->
+  <div class="bg-white rounded-lg shadow p-6 space-y-4">
+
+    <div>
+      <label class="block text-sm font-semibold mb-1">Начало работ</label>
+      <input type="datetime-local" class="border p-2 w-full rounded"
+        [formControl]="taskForm.controls['scheduledStart']" 
+        />
+    </div>
+
+    <div>
+      <label class="block text-sm font-semibold mb-1">Окончание работ</label>
+      <input type="datetime-local" class="border p-2 w-full rounded"
+        [formControl]="taskForm.controls['scheduledEnd']" 
+        />
+    </div>
+
+    <div>
+      <label class="block text-sm font-semibold mb-1">Цель</label>
+      <input type="text" class="border p-2 w-full rounded bg-gray-100 cursor-default focus:outline-none focus:ring-0"
+        [formControl]="taskForm.controls['purpose']" readonly />
+    </div>
+
+    <div>
+      <label class="block text-sm font-semibold mb-1">Энергообъекты (ID)</label>
+      <input type="text" class="border p-2 w-full rounded bg-gray-100 cursor-default focus:outline-none focus:ring-0"
+        [value]="taskForm.value.powerObjectIds?.join(', ') || ''" readonly />
+    </div>
+
+    <div>
+      <label class="block text-sm font-semibold mb-1">Исполнитель</label>
+      <select class="border p-2 w-full rounded" [formControl]="taskForm.controls['executorId']">
+        @for (user of users(); track user.id) {
+        <option [ngValue]="user.id">{{ user.name }}</option>
+        }
+        @empty {
+        <option disabled>Исполнителей нет</option>
+        }
+      </select>
+    </div>
+
+    <button class="mt-4 px-4 py-2 bg-blue-600 text-white rounded" (click)="create()">
+      {{ isEditMode() ? 'Сохранить изменения' : 'Создать задачу' }}
+    </button>
+
+  </div>
+</div>
+}

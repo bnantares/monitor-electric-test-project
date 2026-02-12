@@ -1,0 +1,172 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Диспетчер №1",
+      "type": "dispatcher"
+    },
+    {
+      "id": 2,
+      "name": "Диспетчер №2",
+      "type": "dispatcher"
+    },
+    {
+      "id": 3,
+      "name": "Диспетчер №3",
+      "type": "dispatcher"
+    },
+    {
+      "id": 4,
+      "name": "Электромонтёр №1",
+      "type": "electrician"
+    },
+    {
+      "id": 5,
+      "name": "Электромонтёр №2",
+      "type": "electrician"
+    },
+    {
+      "id": 6,
+      "name": "Электромонтёр №3",
+      "type": "electrician"
+    }
+  ],
+  "powerObjects": [
+    {
+      "id": 1,
+      "name": "Подстанция №1",
+      "type": "substation"
+    },
+    {
+      "id": 2,
+      "name": "Подстанция №2",
+      "type": "substation"
+    },
+    {
+      "id": 3,
+      "name": "Подстанция №3",
+      "type": "substation"
+    },
+    {
+      "id": 4,
+      "name": "ЛЭП №1",
+      "type": "line"
+    },
+    {
+      "id": 5,
+      "name": "ЛЭП №1",
+      "type": "line"
+    }
+  ],
+  "switches": [
+    {
+      "id": 1,
+      "name": "Выключатель 1",
+      "powerObjectId": 1,
+      "lastState": 1,
+      "currentState": 0,
+      "stateChangedAt": "2026-02-09T08:31:00.000Z"
+    },
+    {
+      "id": 2,
+      "name": "Выключатель 2",
+      "powerObjectId": 1,
+      "currentState": 1
+    },
+    {
+      "id": 3,
+      "name": "Выключатель 3",
+      "powerObjectId": 2,
+      "currentState": 1
+    },
+    {
+      "id": 4,
+      "name": "Выключатель 4",
+      "powerObjectId": 2,
+      "currentState": 1
+    },
+    {
+      "id": 5,
+      "name": "Выключатель 5",
+      "powerObjectId": 2,
+      "currentState": 1
+    },
+    {
+      "id": 6,
+      "name": "Выключатель 6",
+      "powerObjectId": 4,
+      "currentState": 1
+    },
+    {
+      "id": 7,
+      "name": "Выключатель 7",
+      "powerObjectId": 5,
+      "currentState": 1
+    },
+    {
+      "id": 8,
+      "name": "Выключатель 8",
+      "powerObjectId": 5,
+      "currentState": 1
+    }
+  ],
+  "requests": [
+    {
+      "id": 1,
+      "name": "Заявка №1",
+      "startAt": "2026-02-01T08:00:00.000Z",
+      "endAt": "2026-02-11T18:00:00.000Z",
+      "purpose": "Ремонт",
+      "powerObjectId": 2
+    },
+    {
+      "id": 2,
+      "name": "Заявка №2",
+      "startAt": "2026-02-01T08:00:00.000Z",
+      "endAt": "2026-02-11T18:00:00.000Z",
+      "purpose": "Отключение",
+      "powerObjectId": 5
+    },
+    {
+      "id": 3,
+      "name": "Заявка №3",
+      "startAt": "2026-02-01T08:00:00.000Z",
+      "endAt": "2026-02-11T18:00:00.000Z",
+      "purpose": "Включение",
+      "powerObjectId": 3
+    }
+  ],
+  "tasks": [
+    {
+      "requestId": 1,
+      "executorId": 4,
+      "scheduledStart": "2026-02-01T11:00",
+      "scheduledEnd": "2026-02-11T21:00",
+      "purpose": "Ремонт",
+      "powerObjectIds": [
+        2
+      ],
+      "status": "closed_success",
+      "id": 1
+    }
+  ],
+  "operations": [
+    {
+      "id": 1,
+      "taskId": 1,
+      "switchId": 3,
+      "targetState": 0,
+      "executionStatus": "success",
+      "order": 1,
+      "comment": ""
+    },
+    {
+      "id": 2,
+      "taskId": 1,
+      "switchId": 4,
+      "targetState": 1,
+      "executionStatus": "fail",
+      "order": 2
+    }
+  ]
+}

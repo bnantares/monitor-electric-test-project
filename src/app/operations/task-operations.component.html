@@ -1,0 +1,36 @@
+@if (operations().length) {
+  <table class="w-full table-auto border-collapse">
+    <thead>
+      <tr class="bg-gray-200 text-left">
+        <th class="p-2 border">#</th>
+        <th class="p-2 border">Выключатель</th>
+        <th class="p-2 border">Цель состояние</th>
+        <th class="p-2 border">Статус</th>
+        <th class="p-2 border">Комментарий</th>
+        <th class="p-2 border">Время исполнения</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (op of operations(); track op.id) {
+        <tr class="border-b">
+          <td class="p-2 border">{{ op.order }}</td>
+          <td class="p-2 border">{{ op.switchId }}</td>
+          <td class="p-2 border">{{ op.targetState }}</td>
+          <td class="p-2 border">
+            <select [(ngModel)]="op.executionStatus" (change)="update(op)">
+              <option value="not_executed">Не выполнено</option>
+              <option value="success">Успешно</option>
+              <option value="fail">Ошибка</option>
+            </select>
+          </td>
+          <td class="p-2 border">
+            <input type="text" [(ngModel)]="op.comment" (blur)="update(op)" />
+          </td>
+          <td class="p-2 border">{{ op.executionTime | date:'dd.MM.yyyy HH:mm' }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+} @else {
+  <div class="text-gray-500">Операции ещё не созданы для этой задачи</div>
+}

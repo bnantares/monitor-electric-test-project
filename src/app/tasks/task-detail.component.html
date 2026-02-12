@@ -1,0 +1,108 @@
+@if (task()) {
+
+<div class="max-w-4xl mx-auto space-y-6">
+
+  <!-- header -->
+  <div class="flex items-center justify-between">
+    <h1 class="text-2xl font-bold">
+      Задача по Заявке №{{ task().requestId }}
+    </h1>
+
+    <!-- <button
+        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        (click)="createTask(request())"
+      >
+        Создать задачу
+      </button> -->
+  </div>
+
+  <!-- основная карточка -->
+  <div class="bg-white rounded-lg shadow p-6 space-y-4">
+
+    <div class="grid grid-cols-1 gap-4">
+      <div>
+        <div class="text-sm text-gray-500">Дата начала</div>
+        <div class="font-medium">
+          {{ task().scheduledStart | date:'dd.MM.yyyy HH:mm'}}
+        </div>
+      </div>
+
+      <div>
+        <div class="text-sm text-gray-500">Дата окончания</div>
+        <div class="font-medium">
+          {{ task().scheduledEnd | date:'dd.MM.yyyy HH:mm'}}
+        </div>
+      </div>
+
+      <div>
+        <div class="text-sm text-gray-500">Цель</div>
+        <div class="font-medium">
+          {{ task().purpose }}
+        </div>
+      </div>
+
+      <div>
+        <div class="text-sm text-gray-500">Энергообъекты</div>
+        <div class="font-medium">
+          {{ task().powerObjectIds }}
+        </div>
+      </div>
+
+      <div>Ссылка на заявку:
+        <a [routerLink]="['/requests', task().requestId]" target="_blank" class="text-blue-600 underline">
+          Открыть заявку
+        </a>
+      </div>
+
+      @if (task()) {
+      <div>
+        <app-task-operations [taskId]="task().id"></app-task-operations>
+      </div>
+      }
+
+      <div>
+        <div class="text-sm text-gray-500">Исполнитель</div>
+        <div class="font-medium">
+          {{ executor()?.name || '—' }}
+        </div>
+      </div>
+
+      <div>
+        <div class="text-sm text-gray-500">Статус</div>
+        <div class="font-medium">
+          {{ task().status }}
+        </div>
+      </div>
+    </div>
+
+    <div class="flex gap-2">
+
+      @if (task().status === 'created') {
+      <button class="px-3 py-1 bg-green-600 text-white rounded" (click)="setStatus('allowed')">
+        Разрешить
+      </button>
+      }
+
+      @if (task().status === 'allowed') {
+      <button class="px-3 py-1 bg-blue-600 text-white rounded" (click)="setStatus('closed_success')">
+        Закрыть успешно
+      </button>
+
+      <button class="px-3 py-1 bg-red-600 text-white rounded" (click)="setStatus('closed_with_issues')">
+        Закрыть с проблемами
+      </button>
+      }
+
+    </div>
+
+
+
+    <a [routerLink]="['/tasks', task().id, 'edit']" class="px-4 py-2 bg-blue-600 text-white rounded">
+      Редактировать
+    </a>
+
+  </div>
+
+</div>
+
+}

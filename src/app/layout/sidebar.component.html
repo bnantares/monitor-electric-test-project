@@ -1,0 +1,18 @@
+<aside class="w-64 bg-gray-100 p-4 min-h-screen">
+    <h2 class="font-bold mb-4">Навигация</h2>
+    <ul>
+        <li class="mb-2">
+            <a routerLink="/requests" routerLinkActive="bg-blue-50 text-blue-700 border-l-4 border-blue-600"
+                [routerLinkActiveOptions]="{ exact: true }" class="block px-3 py-2 rounded">
+                Заявки
+            </a>
+        </li>
+
+        <li class="mb-2">
+            <a routerLink="/tasks" routerLinkActive="bg-blue-50 text-blue-700 border-l-4 border-blue-600"
+                [routerLinkActiveOptions]="{ exact: true }" class="block px-3 py-2 rounded">
+                Задачи
+            </a>
+        </li>
+    </ul>
+</aside>

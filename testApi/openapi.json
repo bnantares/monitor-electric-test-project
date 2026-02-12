@@ -1,0 +1,339 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Система управления энергообъектами",
+    "description": "REST API на базе json-server для работы с пользователями, энергообъектами, выключателями и заявками.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "get": {
+        "summary": "Получить список пользователей",
+        "responses": {
+          "200": {
+            "description": "Список пользователей",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "summary": "Получить пользователя по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Данные пользователя",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Пользователь не найден"
+          }
+        }
+      }
+    },
+    "/powerobjects": {
+      "get": {
+        "summary": "Получить список энергообъектов",
+        "responses": {
+          "200": {
+            "description": "Список энергообъектов",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PowerObject"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/powerobjects/{id}": {
+      "get": {
+        "summary": "Получить энергообъект по ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Данные энергообъекта",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PowerObject"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Энергообъект не найден"
+          }
+        }
+      }
+    },
+    "/switches": {
+      "get": {
+        "summary": "Получить список выключателей",
+        "responses": {
+          "200": {
+            "description": "Список выключателей",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Switch"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/requests": {
+      "get": {
+        "summary": "Получить список заявок",
+        "responses": {
+          "200": {
+            "description": "Список заявок",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Request"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/powerObjectsWithSwitches": {
+      "get": {
+        "summary": "Получить энергообъекты с вложенными выключателями",
+        "description": "Эквивалентно запросу `/powerobjects?_embed=switches`.",
+        "responses": {
+          "200": {
+            "description": "Список энергообъектов с вложенными выключателями",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PowerObjectWithSwitches"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/requestsWithPowerObject": {
+      "get": {
+        "summary": "Получить заявки с расширенной информацией об энергообъекте",
+        "description": "Эквивалентно запросу `/requests?_expand=powerObject`.",
+        "responses": {
+          "200": {
+            "description": "Список заявок с данными энергообъекта",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RequestWithPowerObject"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Уникальный идентификатор пользователя"
+          },
+          "name": {
+            "type": "string",
+            "description": "Имя пользователя"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["dispatcher", "electrician"],
+            "description": "Тип пользователя: диспетчер или электромонтёр"
+          }
+        },
+        "required": ["id", "name", "type"]
+      },
+      "PowerObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Уникальный идентификатор энергообъекта"
+          },
+          "name": {
+            "type": "string",
+            "description": "Название энергообъекта"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["substation", "line"],
+            "description": "Тип энергообъекта: подстанция или линия электропередачи"
+          }
+        },
+        "required": ["id", "name", "type"]
+      },
+      "Switch": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Уникальный идентификатор выключателя"
+          },
+          "name": {
+            "type": "string",
+            "description": "Название выключателя"
+          },
+          "powerObjectId": {
+            "type": "integer",
+            "description": "ID связанного энергообъекта"
+          },
+          "lastState": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Предыдущее состояние (0 — выключен, 1 — включён)"
+          },
+          "currentState": {
+            "type": "integer",
+            "description": "Текущее состояние (0 — выключен, 1 — включён)"
+          },
+          "stateChangedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Дата и время последнего изменения состояния"
+          }
+        },
+        "required": ["id", "name", "powerObjectId", "currentState"]
+      },
+      "Request": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Уникальный идентификатор заявки"
+          },
+          "name": {
+            "type": "string",
+            "description": "Название заявки"
+          },
+          "startAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Время начала заявки"
+          },
+          "endAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Время окончания заявки"
+          },
+          "purpose": {
+            "type": "string",
+            "description": "Цель заявки (например, ремонт)"
+          },
+          "powerObjectId": {
+            "type": "integer",
+            "description": "ID связанного энергообъекта"
+          }
+        },
+        "required": ["id", "name", "startAt", "endAt", "purpose", "powerObjectId"]
+      },
+      "PowerObjectWithSwitches": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PowerObject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "switches": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Switch"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "RequestWithPowerObject": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Request"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "powerObject": {
+                "$ref": "#/components/schemas/PowerObject"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

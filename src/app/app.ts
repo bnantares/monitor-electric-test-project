@@ -1,12 +1,19 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core';
+import { SidebarComponent } from './layout/sidebar.component';
+import { MainAreaComponent } from './layout/main-area.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.html',
-  styleUrl: './app.css'
+  standalone: true,
+  imports: [SidebarComponent, MainAreaComponent],
+  template: `
+    <div class="flex h-screen bg-gray-50">
+      <app-sidebar></app-sidebar>
+      <app-main></app-main>
+    </div>
+  `
 })
+
 export class App {
-  protected readonly title = signal('monitor-electric-test-project');
+
 }
