@@ -6,6 +6,7 @@ export interface Operation {
   id?: number;
   taskId: number;
   switchId: number;
+  powerObjectId: number;
   targetState: 0 | 1;
   executionStatus: 'not_executed' | 'success' | 'fail';
   executionTime?: string;

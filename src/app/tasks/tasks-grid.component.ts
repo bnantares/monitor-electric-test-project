@@ -15,7 +15,6 @@ export class TasksGridComponent {
   private router = inject(Router);
 
   tasks = signal<any[]>([]);
-  // selectedTask = signal<any | null>(null);
 
   ngOnInit() {
     this.tasksApi.getAll().subscribe(res => {

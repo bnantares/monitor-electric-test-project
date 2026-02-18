@@ -4,7 +4,7 @@
   <h1 class="text-2xl font-bold">
     @if (isEditMode()) {
     <div>
-      Редактирование задачи по Заявке
+      Редактирование задачи по Заявке №{{ taskId() }}
     </div>
     } @else if (request()) {
     <div>
@@ -17,20 +17,18 @@
   </h1>
 
   <!-- Форма создания задачи -->
-  <div class="bg-white rounded-lg shadow p-6 space-y-4">
+  <div class="bg-white rounded-lg shadow p-6 space-y-4 min-w-[900px]">
 
     <div>
       <label class="block text-sm font-semibold mb-1">Начало работ</label>
       <input type="datetime-local" class="border p-2 w-full rounded"
-        [formControl]="taskForm.controls['scheduledStart']" 
-        />
+        [formControl]="taskForm.controls['scheduledStart']" />
     </div>
 
     <div>
       <label class="block text-sm font-semibold mb-1">Окончание работ</label>
       <input type="datetime-local" class="border p-2 w-full rounded"
-        [formControl]="taskForm.controls['scheduledEnd']" 
-        />
+        [formControl]="taskForm.controls['scheduledEnd']" />
     </div>
 
     <div>
@@ -40,16 +38,39 @@
     </div>
 
     <div>
-      <label class="block text-sm font-semibold mb-1">Энергообъекты (ID)</label>
+      @if (!isEditMode()) {
+      <div>
+        <label class="block font-semibold mb-1">Энергообъекты</label>
+
+        @for (obj of powerObjects(); track obj.id) {
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input 
+            type="checkbox"
+            class="w-5 h-5 accent-blue-600 cursor-pointer" 
+            [checked]="taskForm.value.powerObjectIds?.includes(obj.id)"
+            [disabled]="obj.id === request()?.powerObjectId"
+            (change)="selectPowerObject(obj.id, $event.target.checked)" />
+          <span>{{ obj.name }} (ID: {{ obj.id }})</span>
+        </label>
+        }
+      </div>
+      } @else {
+
+      <!-- Редактирование: readonly текст  -->
       <input type="text" class="border p-2 w-full rounded bg-gray-100 cursor-default focus:outline-none focus:ring-0"
-        [value]="taskForm.value.powerObjectIds?.join(', ') || ''" readonly />
+        [value]="powerObjectNames()" 
+        readonly 
+      />
+      }
     </div>
 
     <div>
       <label class="block text-sm font-semibold mb-1">Исполнитель</label>
       <select class="border p-2 w-full rounded" [formControl]="taskForm.controls['executorId']">
         @for (user of users(); track user.id) {
-        <option [ngValue]="user.id">{{ user.name }}</option>
+        <option [ngValue]="user.id">
+          {{ user.name }}
+        </option>
         }
         @empty {
         <option disabled>Исполнителей нет</option>
@@ -57,10 +78,18 @@
       </select>
     </div>
 
-    <button class="mt-4 px-4 py-2 bg-blue-600 text-white rounded" (click)="create()">
-      {{ isEditMode() ? 'Сохранить изменения' : 'Создать задачу' }}
-    </button>
+    <div class="mt-6 flex justify-between items-center">
+      <button type="button"
+        class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition cursor-pointer"
+        (click)="redirectBack()">
+        Отмена
+      </button>
 
+      <button type="button" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition cursor-pointer"
+        (click)="create()">
+        {{ isEditMode() ? 'Сохранить изменения' : 'Создать задачу' }}
+      </button>
+    </div>
   </div>
 </div>
 }

@@ -1,107 +1,138 @@
 @if (task()) {
 
-<div class="max-w-4xl mx-auto space-y-6">
+<div class="max-w-6xl mx-auto space-y-6">
 
-  <!-- header -->
+  <!-- Хэдер -->
   <div class="flex items-center justify-between">
     <h1 class="text-2xl font-bold">
       Задача по Заявке №{{ task().requestId }}
     </h1>
-
-    <!-- <button
-        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        (click)="createTask(request())"
-      >
-        Создать задачу
-      </button> -->
+    @if (task().status === 'created') {
+    <a [routerLink]="['/tasks', task().id, 'edit']"
+      class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+      Редактировать
+    </a>
+    }
   </div>
 
-  <!-- основная карточка -->
+  <!-- Основная карточка -->
   <div class="bg-white rounded-lg shadow p-6 space-y-4">
 
     <div class="grid grid-cols-1 gap-4">
       <div>
-        <div class="text-sm text-gray-500">Дата начала</div>
-        <div class="font-medium">
-          {{ task().scheduledStart | date:'dd.MM.yyyy HH:mm'}}
-        </div>
+        <label class="block text-sm font-semibold mb-1">Начало работ</label>
+        <input type="text" class="pt-2 w-full rounded focus:outline-none"
+          [value]="task().scheduledStart | date:'dd.MM.yyyy HH:mm'" readonly />
       </div>
 
       <div>
-        <div class="text-sm text-gray-500">Дата окончания</div>
-        <div class="font-medium">
-          {{ task().scheduledEnd | date:'dd.MM.yyyy HH:mm'}}
-        </div>
+        <label class="block text-sm font-semibold mb-1">Окончание работ</label>
+        <input type="text" class="pt-2 w-full rounded focus:outline-none"
+          [value]="task().scheduledEnd | date:'dd.MM.yyyy HH:mm'" readonly />
       </div>
 
       <div>
-        <div class="text-sm text-gray-500">Цель</div>
-        <div class="font-medium">
-          {{ task().purpose }}
-        </div>
+        <label class="block text-sm font-semibold mb-1">Цель</label>
+        <input type="text" class="pt-2 w-full rounded focus:outline-none" [value]="task().purpose" readonly />
       </div>
 
       <div>
-        <div class="text-sm text-gray-500">Энергообъекты</div>
-        <div class="font-medium">
-          {{ task().powerObjectIds }}
-        </div>
+        <label class="block text-sm font-semibold mb-1">Энергообъекты</label>
+        <input type="text" class="pt-2 w-full rounded focus:outline-none" [value]="powerObjectNames()" readonly />
       </div>
 
-      <div>Ссылка на заявку:
-        <a [routerLink]="['/requests', task().requestId]" target="_blank" class="text-blue-600 underline">
-          Открыть заявку
+      <div>
+        <label class="block text-sm font-semibold mb-1">Ссылка на заявку</label>
+        <a [routerLink]="['/requests', task().requestId]" target="_blank" class="text-blue-600 hover:underline">
+          Заявка №{{ task().requestId }}
         </a>
       </div>
 
       @if (task()) {
       <div>
-        <app-task-operations [taskId]="task().id"></app-task-operations>
+        <app-task-operations [taskId]="task().id" [taskStatus]="task().status"
+          [taskPowerObjectsIds]="task().powerObjectIds">
+        </app-task-operations>
       </div>
       }
 
       <div>
-        <div class="text-sm text-gray-500">Исполнитель</div>
-        <div class="font-medium">
-          {{ executor()?.name || '—' }}
-        </div>
+        <label class="block text-sm font-semibold mb-1">Исполнитель</label>
+        <input type="text" class="pt-2 w-full rounded focus:outline-none" [value]="executor()?.name || 'Не назначен'"
+          readonly />
       </div>
 
       <div>
-        <div class="text-sm text-gray-500">Статус</div>
-        <div class="font-medium">
-          {{ task().status }}
+        <label class="block text-sm font-semibold mb-1">Статус</label>
+        <input type="text" [class]="getStatusInfo(task()?.status).color" class="focus:outline-none"
+          [value]="getStatusInfo(task()?.status).label" readonly />
+      </div>
+
+      @if (task().status === 'closed_with_issues') {
+      <div>
+        <label class="block text-sm font-semibold mb-1">
+          Комментарий при закрытии
+        </label>
+        <div class="p-3 bg-red-50 border border-red-200 rounded">
+          {{ task().closedWithIssuesComment }}
         </div>
       </div>
+      }
     </div>
 
-    <div class="flex gap-2">
-
+    <div class="flex gap-2 justify-end">
       @if (task().status === 'created') {
-      <button class="px-3 py-1 bg-green-600 text-white rounded" (click)="setStatus('allowed')">
-        Разрешить
+      <button class="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition cursor-pointer"
+        (click)="setStatus('allowed')">
+        Разрешить к исполнению
       </button>
       }
 
       @if (task().status === 'allowed') {
-      <button class="px-3 py-1 bg-blue-600 text-white rounded" (click)="setStatus('closed_success')">
-        Закрыть успешно
+      <button class="px-3 py-2 bg-green-600 text-white rounded 
+              hover:bg-green-700 transition cursor-pointer
+              disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-400"
+        [disabled]="!operationsReady()" [attr.title]="!operationsReady() ? 'Все операции должны быть завершены' : null"
+        (click)="setStatus('closed_success')">
+        Завершить успешно
       </button>
 
-      <button class="px-3 py-1 bg-red-600 text-white rounded" (click)="setStatus('closed_with_issues')">
-        Закрыть с проблемами
+      <button class="px-3 py-2 bg-red-600 text-white rounded 
+              hover:bg-red-700 transition cursor-pointer
+              disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-400"
+        [disabled]="!operationsReady()" [attr.title]="!operationsReady() ? 'Все операции должны быть завершены' : null"
+        (click)="openCloseWithIssuesModal()">
+        Завершить с замечаниями
       </button>
       }
-
     </div>
-
-
-
-    <a [routerLink]="['/tasks', task().id, 'edit']" class="px-4 py-2 bg-blue-600 text-white rounded">
-      Редактировать
-    </a>
-
   </div>
+
+  <!-- Закрытие с модалкой -->
+  @if (isCloseWithIssuesModalOpen()) {
+  <div class="fixed inset-0 bg-black/40 flex items-center justify-center">
+    <div class="bg-white p-4 rounded w-96 shadow-lg">
+      <h3 class="font-semibold mb-3">
+        Комментарий к завершению
+      </h3>
+
+      <textarea class="w-full border rounded p-2" rows="5" [ngModel]="draftCloseComment()"
+        (ngModelChange)="draftCloseComment.set($any($event))">
+    </textarea>
+
+      <div class="flex justify-end gap-2 mt-4">
+        <button class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300" (click)="closeCloseWithIssuesModal()">
+          Отмена
+        </button>
+
+        <button class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+          [disabled]="!draftCloseComment().trim()" (click)="confirmCloseWithIssues()">
+          Завершить
+        </button>
+      </div>
+    </div>
+  </div>
+  }
 
 </div>
 

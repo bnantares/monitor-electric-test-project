@@ -10,29 +10,3 @@
     </button>
   </div>
 </div>
-
-
-<!-- Модалка -->
-<!-- @if (selectedRequest()) {
-  <div class="fixed inset-0 bg-black/50 flex justify-center items-center">
-    <div class="bg-white p-6 rounded shadow-lg w-2/3 max-w-2xl">
-      <h2 class="text-xl font-bold mb-4">{{ selectedRequest()?.name }}</h2>
-      <p><strong>Дата/время:</strong> {{ selectedRequest()?.startAt | date:'short' }} - {{ selectedRequest()?.endAt | date:'short' }}</p>
-      <p><strong>Цель:</strong> {{ selectedRequest()?.purpose }}</p>
-      <p><strong>Энергообъект:</strong> {{ selectedRequest()?.powerObject?.name }}</p>
-
-      <button 
-        class="mt-4 px-4 py-2 bg-green-500 text-white rounded cursor-pointer" 
-        (click)="createTask(selectedRequest())"
-        >
-        Создать задачу
-      </button>
-      <button 
-        class="mt-2 px-4 py-2 bg-gray-300 text-black rounded ml-2 cursor-pointer" 
-        (click)="closeModal()"
-       >
-        Закрыть
-      </button>
-    </div>
-  </div>
-} -->

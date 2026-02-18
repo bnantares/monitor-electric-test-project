@@ -2,6 +2,13 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 
+export type TaskStatus =
+  | null
+  | 'created'
+  | 'allowed'
+  | 'closed_success'
+  | 'closed_with_issues';
+
 export interface Task {
   id?: number;
   requestId: number;
@@ -10,7 +17,8 @@ export interface Task {
   scheduledEnd: string;
   powerObjectIds: number[];
   purpose: string;
-  status: 'created' | 'allowed' | 'closed_success' | 'closed_with_issues';
+  status: TaskStatus;
+  closedWithIssuesComment: string | null;
 }
 
 @Injectable({ providedIn: 'root' })

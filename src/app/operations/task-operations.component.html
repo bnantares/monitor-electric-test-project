@@ -1,36 +1,167 @@
-@if (operations().length) {
-  <table class="w-full table-auto border-collapse">
+<div class="overflow-x-auto">
+  @if (operations().length) {
+  <table class="w-full border-collapse">
     <thead>
       <tr class="bg-gray-200 text-left">
         <th class="p-2 border">#</th>
         <th class="p-2 border">Выключатель</th>
-        <th class="p-2 border">Цель состояние</th>
-        <th class="p-2 border">Статус</th>
+        <th class="p-2 border">Энергообьект</th>
+        <th class="p-2 border">Целевое состояние</th>
+        <th class="p-2 border">Признак исполнения</th>
         <th class="p-2 border">Комментарий</th>
         <th class="p-2 border">Время исполнения</th>
+        @if (isEditable()) {
+        <th class="p-2 border">Переместить</th>
+        }
       </tr>
     </thead>
     <tbody>
       @for (op of operations(); track op.id) {
-        <tr class="border-b">
-          <td class="p-2 border">{{ op.order }}</td>
-          <td class="p-2 border">{{ op.switchId }}</td>
-          <td class="p-2 border">{{ op.targetState }}</td>
-          <td class="p-2 border">
-            <select [(ngModel)]="op.executionStatus" (change)="update(op)">
-              <option value="not_executed">Не выполнено</option>
-              <option value="success">Успешно</option>
-              <option value="fail">Ошибка</option>
-            </select>
-          </td>
-          <td class="p-2 border">
-            <input type="text" [(ngModel)]="op.comment" (blur)="update(op)" />
-          </td>
-          <td class="p-2 border">{{ op.executionTime | date:'dd.MM.yyyy HH:mm' }}</td>
-        </tr>
+      <tr class="border-b">
+        <td class="p-2 border">{{ op.order }}</td>
+        <td class="p-2 border">{{ switchesMap().get(op.switchId) }}</td>
+        <td class="p-2 border">{{ powerObjectMap().get(op.powerObjectId) ?? '—' }}</td>
+        <td class="p-2 border">{{ op.targetState }}</td>
+        <td class="p-2 border">
+          <select 
+            [(ngModel)]="op.executionStatus" 
+            (change)="onStatusChange(op)" 
+            [disabled]="isFullyBlocked()"
+            class="disabled:appearance-none"
+          >
+            <option value="not_executed">Не выполнено</option>
+            <option value="success">Успешное</option>
+            <option value="fail">Неуспешное</option>
+          </select>
+        </td>
+
+        <td class="p-2 border">
+          @if (op.executionStatus === 'fail') {
+          <span class="block truncate cursor-pointer" [class.text-gray-400]="!op.comment"
+            (click)="openCommentModal(op)">
+            {{ getCommentPreview(op) }}
+          </span>
+          } @else {
+          <span class="text-gray-300">—</span>
+          }
+        </td>
+
+        <td class="p-2 border">
+          <input type="datetime-local" [(ngModel)]="op.executionTime"
+            [disabled]="isFullyBlocked() || isExecutionTimeDisabled(op)" (change)="update(op)" />
+        </td>
+        @if (isEditable()) {
+        <td class="p-2 flex gap-1">
+          <button type="button" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 cursor-pointer"
+            (click)="moveUp(op)" [disabled]="op.order === 1">↑</button>
+          <button type="button" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 cursor-pointer"
+            (click)="moveDown(op)" [disabled]="op.order === operations().length">↓</button>
+        </td>
+        }
+      </tr>
+      }
+
+      @if (isEditable()) {
+      <tr class="bg-gray-100 text-gray-500 cursor-pointer hover:bg-gray-200 transition"
+        (click)="openCreateOperationModal()">
+        <td colspan="8" class="p-3 text-center">
+          + Добавить операцию
+        </td>
+      </tr>
       }
     </tbody>
+
   </table>
-} @else {
+
+  @if (selectedOperation()) {
+  <div class="fixed inset-0 bg-black/40 flex items-center justify-center">
+    <div class="bg-white p-4 rounded w-96 shadow-lg">
+      <h3 class="font-semibold mb-2">Комментарий / Замечания</h3>
+
+      <textarea class="w-full border rounded p-2" rows="8" [ngModel]="draftComment()"
+        (ngModelChange)="draftComment.set($event)"></textarea>
+
+      
+      <div class="flex justify-end gap-2 mt-3">
+        <button class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition cursor-pointer"
+          (click)="closeCommentModal()">
+          Отмена
+        </button>
+        @if (!isFullyBlocked()) {
+        <button class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition cursor-pointer"
+          (click)="saveComment()">
+          Сохранить
+        </button>
+        }
+      </div>
+    </div>
+  </div>
+  }
+
+  } @else {
   <div class="text-gray-500">Операции ещё не созданы для этой задачи</div>
+  @if (isEditable()) {
+  <tr class="bg-gray-100 text-gray-500 cursor-pointer hover:bg-gray-200 transition"
+    (click)="openCreateOperationModal()">
+    <td colspan="7" class="p-3 text-center">
+      + Добавить операцию
+    </td>
+  </tr>
+  }
+  }
+</div>
+
+
+@if (isCreateModalOpen()) {
+<div class="fixed inset-0 bg-black/40 flex items-center justify-center">
+  <div class="bg-white p-4 rounded w-96 shadow-lg">
+    <h3 class="font-semibold mb-4">Новая операция</h3>
+
+    <form [formGroup]="createForm" class="flex flex-col gap-3">
+      <div>
+        <div>Энергообьект</div>
+        <select class="border p-2 rounded" formControlName="powerObjectId"
+          (ngModelChange)="onPowerObjectChange($event)">
+          <option [ngValue]="null" disabled>Выберите энергообъект</option>
+          @for (obj of allowedPowerObjects(); track obj.id) {
+          <option [ngValue]="obj.id">{{ obj.name }}</option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <div>Выключатель</div>
+        <select class="border p-2 rounded" formControlName="switchId">
+          <option [ngValue]="null" disabled>Выберите выключатель</option>
+          @for (sw of filteredSwitches(); track sw.id) {
+          <option [ngValue]="sw.id">{{ sw.name }}</option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <div>Целевое состояние (0 - выкл, 1 - вкл)</div>
+        <select class="border p-2 rounded" formControlName="targetState">
+          <option [ngValue]="0">0</option>
+          <option [ngValue]="1">1</option>
+        </select>
+      </div>
+
+
+    </form>
+
+    <div class="flex justify-end gap-2 mt-4">
+      <button class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition cursor-pointer"
+        (click)="closeCreateOperationModal()">
+        Отмена
+      </button>
+
+      <button
+        class="px-3 py-1 bg-blue-600 text-white rounded disabled:opacity-50 hover:bg-blue-700 transition cursor-pointer"
+        [disabled]="createForm.invalid" (click)="createOperation()">
+        Создать
+      </button>
+    </div>
+  </div>
+</div>
 }

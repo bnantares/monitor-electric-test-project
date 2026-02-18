@@ -15,7 +15,6 @@ export class RequestsGridComponent {
   private router = inject(Router);
 
   requests = signal<any[]>([]);
-  // selectedRequest = signal<any | null>(null);
 
   ngOnInit() {
     this.api.getAll().subscribe(res => {

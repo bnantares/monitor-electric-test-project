@@ -1,69 +1,50 @@
-<!-- @if (request()) {
-<div class="p-6">
-    <h1 class="text-2xl font-bold mb-4">{{ request().name }}</h1>
-
-    <pre>{{ request() | json }}</pre>
-
-    <button class="mt-4 px-4 py-2 bg-blue-600 text-white rounded" (click)="createTask(request())">
-        Создать задачу
-    </button>
-</div>
-} -->
 @if (request()) {
 
-  <div class="max-w-4xl mx-auto space-y-6">
+<div class="max-w-4xl mx-auto space-y-6">
+  <div class="flex items-center justify-between">
+    <h1 class="text-2xl font-bold">
+      {{ request().name }}
+    </h1>
 
-    <!-- header -->
-    <div class="flex items-center justify-between">
-      <h1 class="text-2xl font-bold">
-        {{ request().name }}
-      </h1>
-
-      <button
-        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        (click)="createTask(request())"
-      >
-        Создать задачу
-      </button>
-    </div>
-
-    <!-- основная карточка -->
-    <div class="bg-white rounded-lg shadow p-6 space-y-4">
-
-      <div class="grid grid-cols-2 gap-4">
-
-        <div>
-          <div class="text-sm text-gray-500">Дата начала</div>
-          <div class="font-medium">
-            {{ request().startAt | date:'dd.MM.yyyy HH:mm'}}
-          </div>
-        </div>
-
-        <div>
-          <div class="text-sm text-gray-500">Дата окончания</div>
-          <div class="font-medium">
-            {{ request().endAt | date:'dd.MM.yyyy HH:mm'}}
-          </div>
-        </div>
-
-        <div>
-          <div class="text-sm text-gray-500">Цель</div>
-          <div class="font-medium">
-            {{ request().purpose }}
-          </div>
-        </div>
-
-        <div>
-          <div class="text-sm text-gray-500">Энергообъект</div>
-          <div class="font-medium">
-            {{ request().powerObject?.name }}
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-
+    <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer"
+      (click)="createTask(request())">
+      Создать задачу
+    </button>
   </div>
 
+  <!-- основная карточка -->
+  <div class="bg-white rounded-lg shadow p-6 space-y-4">
+
+    <div class="grid grid-cols-2 gap-4">
+
+      <div>
+        <div class="text-sm text-gray-500">Дата начала</div>
+        <div class="font-medium">
+          {{ request().startAt | date:'dd.MM.yyyy HH:mm'}}
+        </div>
+      </div>
+
+      <div>
+        <div class="text-sm text-gray-500">Дата окончания</div>
+        <div class="font-medium">
+          {{ request().endAt | date:'dd.MM.yyyy HH:mm'}}
+        </div>
+      </div>
+
+      <div>
+        <div class="text-sm text-gray-500">Цель</div>
+        <div class="font-medium">
+          {{ request().purpose }}
+        </div>
+      </div>
+
+      <div>
+        <div class="text-sm text-gray-500">Энергообъект</div>
+        <div class="font-medium">
+          {{ request().powerObject?.name }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 }
