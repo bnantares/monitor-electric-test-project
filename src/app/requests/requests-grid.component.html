@@ -1,6 +1,7 @@
 <h1 class="text-2xl font-bold mb-4">Заявки</h1>
 <div class="grid grid-cols-3 gap-4">
-  <div *ngFor="let req of requests()" class="p-4 bg-white shadow rounded">
+  @for (req of requests(); track req.id) {
+  <div class="p-4 bg-white shadow rounded">
     <h3 class="font-semibold">{{ req.name }}</h3>
     <p>{{ req.startAt | date:'short' }} - {{ req.endAt | date:'short' }}</p>
     <p>Цель: {{ req.purpose }}</p>
@@ -9,4 +10,5 @@
       Открыть
     </button>
   </div>
+  }
 </div>

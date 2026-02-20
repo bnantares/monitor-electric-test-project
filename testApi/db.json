@@ -143,9 +143,92 @@
     }
   ],
   "tasks": [
-    
+    {
+      "requestId": 1,
+      "executorId": 4,
+      "scheduledStart": "2026-02-01T11:00",
+      "scheduledEnd": "2026-02-13T21:00",
+      "purpose": "Ремонт",
+      "powerObjectIds": [
+        2,
+        3,
+        4
+      ],
+      "status": "closed_with_issues",
+      "closedWithIssuesComment": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+      "id": 1
+    },
+    {
+      "requestId": 2,
+      "executorId": 5,
+      "scheduledStart": "2026-02-01T11:00",
+      "scheduledEnd": "2026-02-11T21:00",
+      "purpose": "Отключение",
+      "powerObjectIds": [
+        5,
+        4,
+        3,
+        2
+      ],
+      "status": "closed_success",
+      "closedWithIssuesComment": null,
+      "id": 2
+    }
   ],
   "operations": [
-    
+    {
+      "taskId": 1,
+      "switchId": 9,
+      "powerObjectId": 3,
+      "targetState": 0,
+      "executionStatus": "success",
+      "order": 3,
+      "id": 1,
+      "comment": "",
+      "executionTime": "2026-02-18T13:11"
+    },
+    {
+      "taskId": 1,
+      "switchId": 4,
+      "powerObjectId": 2,
+      "targetState": 0,
+      "executionStatus": "fail",
+      "order": 1,
+      "id": 2,
+      "executionTime": "2026-02-18T13:12",
+      "comment": "Увы"
+    },
+    {
+      "taskId": 1,
+      "switchId": 6,
+      "powerObjectId": 4,
+      "targetState": 1,
+      "executionStatus": "fail",
+      "order": 2,
+      "id": 3,
+      "executionTime": "2026-02-18T13:12"
+    },
+    {
+      "taskId": 2,
+      "switchId": 6,
+      "powerObjectId": 4,
+      "targetState": 1,
+      "executionStatus": "success",
+      "order": 1,
+      "id": 4,
+      "comment": "",
+      "executionTime": "2026-02-18T13:15"
+    },
+    {
+      "taskId": 2,
+      "switchId": 9,
+      "powerObjectId": 3,
+      "targetState": 0,
+      "executionStatus": "success",
+      "order": 2,
+      "id": 5,
+      "comment": "",
+      "executionTime": "2026-02-18T13:15"
+    }
   ]
 }

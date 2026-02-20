@@ -1,6 +1,7 @@
 <h1 class="text-2xl font-bold mb-4">Задачи</h1>
 <div class="grid grid-cols-3 gap-4">
-  <div *ngFor="let task of tasks()" class="p-4 bg-white shadow rounded">
+  @for (task of tasks(); track task.id) {
+  <div class="p-4 bg-white shadow rounded">
     <h3 class="font-semibold">Задача по заявке №{{ task.requestId }}</h3>
     <p>{{ task.scheduledStart | date:'short' }} - {{ task.scheduledEnd | date:'short' }}</p>
     <p>Обьект: {{ task.powerObjectIds }}</p>
@@ -9,4 +10,5 @@
       Открыть
     </button>
   </div>
+  }
 </div>
